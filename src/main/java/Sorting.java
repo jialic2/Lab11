@@ -1,8 +1,12 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.util.Scanner;
+
+
 import javax.swing.JFrame;
 
 /**
@@ -17,7 +21,7 @@ public class Sorting {
     private static final int SORT_INCREMENT = 10000;
 
     /** Total number of values to try. */
-    private static final int TOTAL_SORT_VALUES = 100;
+    private static final int TOTAL_SORT_VALUES = 20;
 
     /** Total data size. */
     private static final int TOTAL_INTEGER_VALUES = 1000000;
@@ -29,7 +33,16 @@ public class Sorting {
      * @return the sorted array, or null on failure
      */
     static int[] bubbleSort(final int[] array) {
-        return null;
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 1; j < array.length; j++) {
+                if (array[j] < array[j - 1]) {
+                    int temp = array[j];
+                    array[j] = array[j - 1];
+                    array[j - 1] = temp;
+                }
+            }
+        }
+        return array;
     }
 
     /**
@@ -39,9 +52,48 @@ public class Sorting {
      * @return the sorted array, or null on failure
      */
     static int[] selectionSort(final int[] array) {
-        return null;
+        sort(array, 0, array.length - 1);
+        return array;
     }
-
+/**
+ *
+ * @param array array
+ * @param lo lo
+ * @param hi hi
+ */
+    static void sort(final int[] array, final int lo, final int hi) {
+        if (lo < hi) {
+            swap(array, lo, findMin(array, lo, hi));
+            sort(array, lo + 1, hi);
+        }
+    }
+/**
+ *
+ * @param array array
+ * @param lo lo
+ * @param hi hi
+ * @return index of min
+ */
+    public static int findMin(final int[] array, final int lo, final int hi) {
+        int tempMinIndex = lo;
+        for (int i = lo; i <= hi; i++) {
+            if (array[tempMinIndex] > array[i]) {
+                tempMinIndex = i;
+            }
+        }
+        return tempMinIndex;
+    }
+/**
+ *
+ * @param array array
+ * @param index1 index 1
+ * @param index2 index 2
+ */
+    public static void swap(final int[]array, final int index1, final int index2) {
+        int temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
     /**
      * Merge sort.
      *
@@ -49,7 +101,38 @@ public class Sorting {
      * @return the sorted array, or null on failure
      */
     static int[] mergeSort(final int[] array) {
-        return null;
+        if (array.length == 1) {
+            return array;
+        } else if (array.length == 2) {
+            if (array[0] > array[1]) {
+                int temp = array[0];
+                array[0] = array[1];
+                array[1] = temp;
+            }
+            return array;
+        } else {
+            int mid = array.length / 2;
+            int[] left = new int[mid];
+            int[] right = new int[array.length - mid];
+            for (int i = 0; i < array.length; i++) {
+                if (i < mid) {
+                    left[i] = array[i];
+                } else {
+                    right[i - mid] = array[i];
+                }
+            }
+            left = mergeSort(left);
+            right = mergeSort(right);
+            int[] result = new int[array.length];
+            for (int i = 0; i < array.length; i++) {
+                if (i < mid) {
+                    result[i] = left[i];
+                } else {
+                    result[i] = right[i + mid];
+                }
+            }
+            return merge(result, 0, mid - 1, array.length);
+        }
     }
 
     /**
@@ -71,6 +154,8 @@ public class Sorting {
         int[] left = new int[n1];
         int[] right = new int[n2];
 
+
+
         for (int i = 0; i < n1; ++i) {
             left[i] = arr[l + i];
         }
@@ -79,7 +164,39 @@ public class Sorting {
         }
 
         /* TO DO: Merge left and right array here */
-        return arr;
+        int[] newArr = new int[arr.length];
+        for (int k = 0; k < newArr.length; k++) {
+            if (left.length == 0) {
+                newArr[k] = right[0];
+                int[] temp = new int[n2 - 1];
+                for (int i = 0; i < temp.length; i++) {
+                    temp[i] = right[i + 1];
+                }
+                right = temp;
+            } else if (right.length == 0) {
+                newArr[k] = left[0];
+                int[] temp = new int[n1 - 1];
+                for (int i = 0; i < temp.length; i++) {
+                    temp[i] = left[i + 1];
+                }
+                left = temp;
+            } else if (left[0] > right[0]) {
+                newArr[k] = right[0];
+                int[] temp = new int[n2 - 1];
+                for (int i = 0; i < temp.length; i++) {
+                    temp[i] = right[i + 1];
+                }
+                right = temp;
+            } else {
+                newArr[k] = left[0];
+                int[] temp = new int[n1 - 1];
+                for (int i = 0; i < temp.length; i++) {
+                    temp[i] = left[i + 1];
+                }
+                left = temp;
+            }
+        }
+        return newArr;
     }
 
     /**
